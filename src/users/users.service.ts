@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { IUser } from 'src/typesTS/types';
+import { IUser } from 'src/_typesTS/types';
 import { validate, v4 as uuidv4 } from 'uuid';
 import { db } from 'src/database';
 
