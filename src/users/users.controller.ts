@@ -7,8 +7,6 @@ import {
   Param,
   Post,
   Put,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
@@ -30,14 +28,12 @@ export class UsersController {
   }
 
   @Post()
-  @UsePipes(new ValidationPipe())
   @HttpCode(201)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
-  @UsePipes(new ValidationPipe())
   @HttpCode(200)
   update(
     @Body() updatePasswordDto: UpdatePasswordDto,
