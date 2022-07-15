@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdatePasswordDto {
@@ -5,7 +6,8 @@ export class UpdatePasswordDto {
   @IsString()
   oldPassowrd: string;
 
-  @IsNotEmpty()
+  //@IsNotEmpty()
   @IsString()
+  @Exclude()
   newPassword: string;
 }

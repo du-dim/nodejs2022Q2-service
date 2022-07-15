@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   NotFoundException,
   ForbiddenException,
   Injectable,
@@ -7,7 +6,7 @@ import {
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { IUser } from 'src/_typesTS/types';
-import { validate, v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { db } from 'src/database';
 
 @Injectable()
@@ -20,7 +19,6 @@ export class UsersService {
   }
 
   async getById(id: string) {
-    if (!validate(id)) throw new BadRequestException('UserId is invalid');
     const userId = this.users.find((u) => u.id === id);
     if (!userId) throw new NotFoundException("User doesn't exist");
     const copyUser = { ...userId };
@@ -39,7 +37,6 @@ export class UsersService {
   }
 
   async update(user: UpdatePasswordDto, id: string) {
-    if (!validate(id)) throw new BadRequestException('UserId is invalid');
     const userId = this.users.find((u) => u.id === id);
     if (!userId) throw new NotFoundException("User doesn't exist");
     if (userId.password !== user.oldPassowrd)
@@ -51,7 +48,6 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    if (!validate(id)) throw new BadRequestException('UserId is invalid');
     const user = this.users.find((u) => u.id === id);
     if (!user) throw new NotFoundException("User doesn't exist");
     this.users = this.users.filter((u) => u.id !== id);
