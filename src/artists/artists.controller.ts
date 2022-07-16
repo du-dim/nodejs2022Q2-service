@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -23,7 +24,7 @@ export class ArtistsController {
 
   @Get(':id')
   @HttpCode(200)
-  getById(@Param('id') id: string) {
+  getById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.artistsService.getById(id);
   }
 
@@ -35,13 +36,16 @@ export class ArtistsController {
 
   @Put(':id')
   @HttpCode(200)
-  update(@Body() updateArtistDto: UpdateArtistDto, @Param('id') id: string) {
+  update(
+    @Body() updateArtistDto: UpdateArtistDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
     return this.artistsService.update(updateArtistDto, id);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.artistsService.remove(id);
   }
 }

@@ -7,7 +7,6 @@ import {
 } from 'class-validator';
 
 export class UpdateTrackDto {
-  @IsNotEmpty()
   @IsString()
   name: string;
 
@@ -19,7 +18,6 @@ export class UpdateTrackDto {
   @IsUUID('4')
   albumId: string | null;
 
-  @IsNotEmpty()
   @IsNumber()
   duration: number;
 }

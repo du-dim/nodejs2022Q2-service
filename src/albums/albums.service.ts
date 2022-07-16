@@ -1,24 +1,20 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { validate, v4 as uuidv4 } from 'uuid';
-import { db } from 'src/database';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+import { inMemoryDB } from 'src/database';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Injectable()
 export class AlbumsService {
-  albums = db.albums;
+  albums = inMemoryDB.albums;
+  tracks = inMemoryDB.tracks;
 
   async getAll() {
     return this.albums;
   }
 
   async getById(id: string) {
-    if (!validate(id)) throw new BadRequestException('AlbumId is invalid');
-    const albumId = this.albums.find((art) => art.id === id);
+    const albumId = this.albums.find((alb) => alb.id === id);
     if (!albumId) throw new NotFoundException("Album doesn't exist");
     return albumId;
   }
@@ -29,17 +25,21 @@ export class AlbumsService {
     return await this.getById(id.id);
   }
 
-  async update(user: UpdateAlbumDto, id: string) {
-    const userId = this.albums.find((art) => art.id === id);
-    if (!userId) throw new NotFoundException("Album doesn't exist");
+  async update(album: UpdateAlbumDto, id: string) {
+    const albumIndex = this.albums.findIndex((alb) => alb.id === id);
+    if (albumIndex < 0) throw new NotFoundException("Artist doesn't exist");
+    const newAlbum = { ...this.albums[albumIndex], ...album };
+    this.albums[albumIndex] = newAlbum;
     return await this.getById(id);
   }
 
   async remove(id: string) {
-    if (!validate(id)) throw new BadRequestException('AlbumId is invalid');
-    const album = this.albums.find((art) => art.id === id);
-    if (!album) throw new NotFoundException("Album doesn't exist");
-    this.albums = this.albums.filter((art) => art.id !== id);
+    const albumIndex = this.albums.findIndex((alb) => alb.id === id);
+    if (albumIndex < 0) throw new NotFoundException("Artist doesn't exist");
+    this.albums = this.albums.filter((alb) => alb.id !== id);
+    this.tracks.forEach((tr, i) => {
+      this.tracks[i].albumId = tr.albumId === id ? null : tr.albumId;
+    });
     return;
   }
 }

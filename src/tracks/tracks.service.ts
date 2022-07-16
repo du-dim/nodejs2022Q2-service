@@ -1,24 +1,19 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { validate, v4 as uuidv4 } from 'uuid';
-import { db } from 'src/database';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+import { inMemoryDB } from 'src/database';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 
 @Injectable()
 export class TracksService {
-  tracks = db.tracks;
+  tracks = inMemoryDB.tracks;
 
   async getAll() {
     return this.tracks;
   }
 
   async getById(id: string) {
-    if (!validate(id)) throw new BadRequestException('TrackId is invalid');
-    const trackId = this.tracks.find((art) => art.id === id);
+    const trackId = this.tracks.find((tr) => tr.id === id);
     if (!trackId) throw new NotFoundException("Track doesn't exist");
     return trackId;
   }
@@ -29,17 +24,18 @@ export class TracksService {
     return await this.getById(id.id);
   }
 
-  async update(user: UpdateTrackDto, id: string) {
-    const userId = this.tracks.find((art) => art.id === id);
-    if (!userId) throw new NotFoundException("Track doesn't exist");
+  async update(track: UpdateTrackDto, id: string) {
+    const trackIndex = this.tracks.findIndex((tr) => tr.id === id);
+    if (trackIndex < 0) throw new NotFoundException("Artist doesn't exist");
+    const newTrack = { ...this.tracks[trackIndex], ...track };
+    this.tracks[trackIndex] = newTrack;
     return await this.getById(id);
   }
 
   async remove(id: string) {
-    if (!validate(id)) throw new BadRequestException('TrackId is invalid');
-    const track = this.tracks.find((art) => art.id === id);
+    const track = this.tracks.find((tr) => tr.id === id);
     if (!track) throw new NotFoundException("Track doesn't exist");
-    this.tracks = this.tracks.filter((art) => art.id !== id);
+    this.tracks = this.tracks.filter((tr) => tr.id !== id);
     return;
   }
 }

@@ -7,11 +7,11 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { IUser } from 'src/_typesTS/types';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from 'src/database';
+import { inMemoryDB } from 'src/database';
 
 @Injectable()
 export class UsersService {
-  users = db.users;
+  users = inMemoryDB.users;
   async getAll() {
     const copeUsers = JSON.parse(JSON.stringify(this.users)) as IUser[];
     copeUsers.forEach((u) => delete u.password);

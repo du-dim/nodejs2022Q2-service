@@ -24,7 +24,7 @@ export class UsersController {
 
   @Get(':id')
   @HttpCode(200)
-  getById(@Param('id', new ParseUUIDPipe()) id: string) {
+  getById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.usersService.getById(id);
   }
 
@@ -38,7 +38,7 @@ export class UsersController {
   @HttpCode(200)
   update(
     @Body() updatePasswordDto: UpdatePasswordDto,
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
     console.log(id, updatePasswordDto);
     return this.usersService.update(updatePasswordDto, id);
@@ -46,7 +46,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.usersService.remove(id);
   }
 }
