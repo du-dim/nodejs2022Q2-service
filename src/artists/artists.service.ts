@@ -40,6 +40,7 @@ export class ArtistsService {
     this.tracks.forEach((tr, i) => {
       this.tracks[i].artistId = tr.artistId === id ? null : tr.artistId;
     });
+    //await this.favoritesService.del('artists', id);
     return;
   }
 }

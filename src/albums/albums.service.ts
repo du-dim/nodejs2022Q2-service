@@ -27,7 +27,7 @@ export class AlbumsService {
 
   async update(album: UpdateAlbumDto, id: string) {
     const albumIndex = this.albums.findIndex((alb) => alb.id === id);
-    if (albumIndex < 0) throw new NotFoundException("Artist doesn't exist");
+    if (albumIndex < 0) throw new NotFoundException("Album doesn't exist");
     const newAlbum = { ...this.albums[albumIndex], ...album };
     this.albums[albumIndex] = newAlbum;
     return await this.getById(id);
@@ -35,11 +35,12 @@ export class AlbumsService {
 
   async remove(id: string) {
     const albumIndex = this.albums.findIndex((alb) => alb.id === id);
-    if (albumIndex < 0) throw new NotFoundException("Artist doesn't exist");
+    if (albumIndex < 0) throw new NotFoundException("Album doesn't exist");
     this.albums = this.albums.filter((alb) => alb.id !== id);
     this.tracks.forEach((tr, i) => {
       this.tracks[i].albumId = tr.albumId === id ? null : tr.albumId;
     });
+    //await this.favoritesService.del('albums', id);
     return;
   }
 }

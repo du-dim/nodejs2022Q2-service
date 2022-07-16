@@ -36,6 +36,7 @@ export class TracksService {
     const track = this.tracks.find((tr) => tr.id === id);
     if (!track) throw new NotFoundException("Track doesn't exist");
     this.tracks = this.tracks.filter((tr) => tr.id !== id);
+    //await this.favoritesService.del('tracks', id);
     return;
   }
 }
