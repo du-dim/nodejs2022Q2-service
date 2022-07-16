@@ -39,7 +39,7 @@ export class UsersService {
   async update(user: UpdatePasswordDto, id: string) {
     const userId = this.users.find((u) => u.id === id);
     if (!userId) throw new NotFoundException("User doesn't exist");
-    if (userId.password !== user.oldPassowrd)
+    if (userId.password !== user.oldPassword)
       throw new ForbiddenException('OldPassowrd is wrong');
     userId.password = user.newPassword;
     userId.version += 1;
