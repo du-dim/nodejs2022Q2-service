@@ -5,7 +5,7 @@ class Database {
   artists = [] as IArtist[];
   tracks = [] as ITrack[];
   albums = [] as IAlbum[];
-  favorites = [] as IFavorites[];
+  favorites = { artists: [], tracks: [], albums: [] } as IFavorites;
 }
 
 export const inMemoryDB = new Database();
