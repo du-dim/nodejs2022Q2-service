@@ -8,7 +8,9 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/du-dim/nodejs2022Q2-service.git
+or
+Download ZIP
 ```
 
 ## Installing NPM modules
