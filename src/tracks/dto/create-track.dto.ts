@@ -1,6 +1,6 @@
 import {
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsString,
   IsUUID,
   ValidateIf,
@@ -20,6 +20,6 @@ export class CreateTrackDto {
   albumId: string | null;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   duration: number;
 }

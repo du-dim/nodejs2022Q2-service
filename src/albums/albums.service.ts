@@ -35,7 +35,8 @@ export class AlbumsService {
 
   async create(album: CreateAlbumDto) {
     const id = { id: uuidv4() };
-    this.albums.push({ ...id, ...album });
+    const year = { year: 0 };
+    this.albums.push({ ...id, ...year, ...album });
     return this.getById(id.id);
   }
 

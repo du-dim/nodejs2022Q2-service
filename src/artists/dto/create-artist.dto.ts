@@ -5,7 +5,6 @@ export class CreateArtistDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
   @IsBoolean()
   grammy: boolean;
 }

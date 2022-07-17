@@ -9,12 +9,13 @@ import * as fs from 'fs';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const PORT = process.env.PORT || 4000;
+  app.enableCors();
 
   const __dirname = path.resolve();
   const path_yaml = path.join(__dirname, 'doc', 'api.yaml');
   const yamlString = fs.readFileSync(path_yaml, 'utf-8');
   const docYaml = yaml.parse(yamlString);
-  SwaggerModule.setup('api', app, docYaml);
+  SwaggerModule.setup('doc', app, docYaml);
 
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),

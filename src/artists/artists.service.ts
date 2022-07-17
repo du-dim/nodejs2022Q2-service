@@ -34,7 +34,8 @@ export class ArtistsService {
 
   async create(artist: CreateArtistDto) {
     const id = { id: uuidv4() };
-    this.artists.push({ ...id, ...artist });
+    const grammy = { grammy: false };
+    this.artists.push({ ...id, ...grammy, ...artist });
     return await this.getById(id.id);
   }
 
