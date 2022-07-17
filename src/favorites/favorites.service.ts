@@ -46,8 +46,8 @@ export class FavoritesService {
       | 'albumsService'
       | 'artistsService'
       | 'tracksService';
-    const obj = await this[keyService].getById(id);
-    if (!obj)
+    const obj = await this[keyService].getAll();
+    if (obj.findIndex((e: { id: string }) => e.id === id) < 0)
       throw new UnprocessableEntityException(
         `${entity.slice(0, -1)} doesn't exist`,
       );
@@ -59,6 +59,5 @@ export class FavoritesService {
     this.favorites[entity] = this.favorites[entity].filter(
       (e: string) => e !== id,
     );
-    return;
   }
 }

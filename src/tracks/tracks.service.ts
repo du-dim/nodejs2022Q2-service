@@ -23,9 +23,9 @@ export class TracksService {
   }
 
   async getById(id: string) {
-    const trackId = this.tracks.find((tr) => tr.id === id);
-    if (!trackId) throw new NotFoundException("Track doesn't exist");
-    return trackId;
+    const trackIndex = this.tracks.findIndex((tr) => tr.id === id);
+    if (trackIndex < 0) throw new NotFoundException("Track doesn't exist");
+    return this.tracks[trackIndex];
   }
 
   async create(track: CreateTrackDto) {
@@ -46,7 +46,13 @@ export class TracksService {
     const track = this.tracks.find((tr) => tr.id === id);
     if (!track) throw new NotFoundException("Track doesn't exist");
     this.tracks = this.tracks.filter((tr) => tr.id !== id);
-    await this.favoritesService.del('tracks', id);
+    this.favoritesService.del('tracks', id);
     return;
+  }
+
+  async idNull(entityId: 'albumId' | 'artistId') {
+    for await (const tr of this.tracks) {
+      tr[entityId] = null;
+    }
   }
 }

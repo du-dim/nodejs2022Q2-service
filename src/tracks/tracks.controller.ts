@@ -24,28 +24,28 @@ export class TracksController {
 
   @Get(':id')
   @HttpCode(200)
-  getById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.tracksService.getById(id);
+  async getById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return await this.tracksService.getById(id);
   }
 
   @Post()
   @HttpCode(201)
-  create(@Body() createTrackDto: CreateTrackDto) {
-    return this.tracksService.create(createTrackDto);
+  async create(@Body() createTrackDto: CreateTrackDto) {
+    return await this.tracksService.create(createTrackDto);
   }
 
   @Put(':id')
   @HttpCode(200)
-  update(
+  async update(
     @Body() updateTrackDto: UpdateTrackDto,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    return this.tracksService.update(updateTrackDto, id);
+    return await this.tracksService.update(updateTrackDto, id);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.tracksService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return await this.tracksService.remove(id);
   }
 }

@@ -9,6 +9,7 @@ import { inMemoryDB } from 'src/database';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { FavoritesService } from 'src/favorites/favorites.service';
+import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class ArtistsService {
@@ -17,6 +18,8 @@ export class ArtistsService {
   constructor(
     @Inject(forwardRef(() => FavoritesService))
     private favoritesService: FavoritesService,
+    @Inject(forwardRef(() => TracksService))
+    private tracksService: TracksService,
   ) {}
 
   async getAll() {
@@ -47,10 +50,7 @@ export class ArtistsService {
     const artistIndex = this.artists.findIndex((art) => art.id === id);
     if (artistIndex < 0) throw new NotFoundException("Artist doesn't exist");
     this.artists = this.artists.filter((art) => art.id !== id);
-    this.tracks.forEach((tr, i) => {
-      this.tracks[i].artistId = tr.artistId === id ? null : tr.artistId;
-    });
-    await this.favoritesService.del('artists', id);
-    return;
+    this.tracksService.idNull('artistId');
+    this.favoritesService.del('artists', id);
   }
 }

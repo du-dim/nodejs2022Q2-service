@@ -16,25 +16,25 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
   @Get()
   @HttpCode(200)
-  getAll() {
-    return this.favoritesService.getAll();
+  async getAll() {
+    return await this.favoritesService.getAll();
   }
 
   @Post(':entity/:id')
   @HttpCode(201)
-  add(
+  async add(
     @Param('entity', new ParseEnumPipe(EEntity)) entity: string,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    return this.favoritesService.add(`${entity}s`, id);
+    return await this.favoritesService.add(`${entity}s`, id);
   }
 
   @Delete(':entity/:id')
   @HttpCode(204)
-  del(
+  async del(
     @Param('entity', new ParseEnumPipe(EEntity)) entity: string,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    return this.favoritesService.del(`${entity}s`, id);
+    return await this.favoritesService.del(`${entity}s`, id);
   }
 }

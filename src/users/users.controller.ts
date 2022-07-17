@@ -40,7 +40,6 @@ export class UsersController {
     @Body() updatePasswordDto: UpdatePasswordDto,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    console.log(id, updatePasswordDto);
     return this.usersService.update(updatePasswordDto, id);
   }
 

@@ -9,6 +9,7 @@ import { inMemoryDB } from 'src/database';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { FavoritesService } from 'src/favorites/favorites.service';
+import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class AlbumsService {
@@ -17,6 +18,9 @@ export class AlbumsService {
   constructor(
     @Inject(forwardRef(() => FavoritesService))
     private favoritesService: FavoritesService,
+
+    @Inject(forwardRef(() => TracksService))
+    private tracksService: TracksService,
   ) {}
 
   async getAll() {
@@ -32,7 +36,7 @@ export class AlbumsService {
   async create(album: CreateAlbumDto) {
     const id = { id: uuidv4() };
     this.albums.push({ ...id, ...album });
-    return await this.getById(id.id);
+    return this.getById(id.id);
   }
 
   async update(album: UpdateAlbumDto, id: string) {
@@ -40,17 +44,14 @@ export class AlbumsService {
     if (albumIndex < 0) throw new NotFoundException("Album doesn't exist");
     const newAlbum = { ...this.albums[albumIndex], ...album };
     this.albums[albumIndex] = newAlbum;
-    return await this.getById(id);
+    return this.getById(id);
   }
 
   async remove(id: string) {
     const albumIndex = this.albums.findIndex((alb) => alb.id === id);
     if (albumIndex < 0) throw new NotFoundException("Album doesn't exist");
     this.albums = this.albums.filter((alb) => alb.id !== id);
-    this.tracks.forEach((tr, i) => {
-      this.tracks[i].albumId = tr.albumId === id ? null : tr.albumId;
-    });
-    await this.favoritesService.del('albums', id);
-    return;
+    this.tracksService.idNull('albumId');
+    this.favoritesService.del('albums', id);
   }
 }
