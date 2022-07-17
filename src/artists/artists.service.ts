@@ -1,13 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { inMemoryDB } from 'src/database';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class ArtistsService {
   artists = inMemoryDB.artists;
   tracks = inMemoryDB.tracks;
+  constructor(
+    @Inject(forwardRef(() => FavoritesService))
+    private favoritesService: FavoritesService,
+  ) {}
 
   async getAll() {
     return this.artists;
@@ -40,7 +50,7 @@ export class ArtistsService {
     this.tracks.forEach((tr, i) => {
       this.tracks[i].artistId = tr.artistId === id ? null : tr.artistId;
     });
-    //await this.favoritesService.del('artists', id);
+    await this.favoritesService.del('artists', id);
     return;
   }
 }
