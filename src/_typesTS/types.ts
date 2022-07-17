@@ -30,6 +30,11 @@ export interface IFavorites {
   albums: string[]; // favorite albums ids
   tracks: string[]; // favorite tracks ids
 }
+export interface IFavoritesRepsonse {
+  artists: IArtist[];
+  albums: IAlbum[];
+  tracks: ITrack[];
+}
 
 export enum EEntity {
   ARTIST = 'artist',
