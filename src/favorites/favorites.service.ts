@@ -8,8 +8,6 @@ import { AlbumsService } from 'src/albums/albums.service';
 import { ArtistsService } from 'src/artists/artists.service';
 import { TracksService } from 'src/tracks/tracks.service';
 import { inMemoryDB } from 'src/database';
-import { IFavoritesRepsonse } from 'src/_typesTS/types';
-import e from 'express';
 
 @Injectable()
 export class FavoritesService {
