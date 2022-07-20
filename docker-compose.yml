@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  rest-app:    
+    build: ./
+    restart: always
+    ports: 
+      - "${PORT}:${PORT}"
+    depends_on:
+      - rest-db
+  
+  rest-db:    
+    build: ./database
+    restart: always
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=rest-db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=postgres123
