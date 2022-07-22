@@ -11,13 +11,13 @@ export class UserEntity {
   @Column()
   password: string;
 
-  @Column()
+  @Column('int')
   version: number;
 
-  @Column()
+  @Column('int')
   createdAt: number;
 
-  @Column()
+  @Column('int')
   updatedAt: number;
 
   toResponse() {

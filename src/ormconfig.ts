@@ -1,15 +1,19 @@
-import { DataSourceOptions } from 'typeorm';
-import { UserEntity } from './users/users.entity';
+import { DataSource } from 'typeorm';
+import 'dotenv/config';
 
-export default {
+const datasource = new DataSource({
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'user',
-  password: 'postgres123',
-  database: 'rest-db',
-  entities: [UserEntity],
+  host: process.env.POSTGRES_HOST,
+  port: +process.env.POSTGRES_PORT,
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
   synchronize: true,
-  migrations: [],
+  entities: ['dist/**/*.entity.*js'],
+  migrations: ['dist/migration/*.js'],
   migrationsRun: true,
-} as DataSourceOptions;
+});
+
+datasource.initialize();
+
+export default datasource;

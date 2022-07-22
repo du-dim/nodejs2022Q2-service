@@ -7,13 +7,15 @@ services:
       - "${PORT}:${PORT}"
     depends_on:
       - rest-db
-  
+      
   rest-db:    
     build: ./database
     restart: always
     ports: 
-      - 5432:5432
-    environment:
-      - POSTGRES_DB=rest-db
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=postgres123
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:      
+      - "POSTGRES_DB=${POSTGRES_DB}"
+      - "POSTGRES_USER=${POSTGRES_USER}"
+      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"      
+    
+ 

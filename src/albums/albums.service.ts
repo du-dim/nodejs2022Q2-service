@@ -30,7 +30,7 @@ export class AlbumsService {
   }
 
   async getById(id: string) {
-    const albumId = await this.albumsRepository.findOneBy({ id: id });
+    const albumId = await this.albumsRepository.findOneBy({ id });
     if (!albumId) throw new NotFoundException("Album doesn't exist");
     return albumId;
   }
@@ -45,7 +45,7 @@ export class AlbumsService {
   }
 
   async update(album: UpdateAlbumDto, id: string) {
-    const albumId = await this.albumsRepository.findOneBy({ id: id });
+    const albumId = await this.albumsRepository.findOneBy({ id });
     if (!album) throw new NotFoundException("Album doesn't exist");
     const updateAlbum = { ...albumId, ...album };
     return await this.albumsRepository.save(updateAlbum);

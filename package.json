@@ -18,7 +18,10 @@
     "test:auth": "cross-env TEST_MODE=auth jest --config ./test/jest-e2e.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "megration:gen": " node ./node_modules/typeorm/cli.js migration:generate -d ./dist/ormconfig.js",
+    "megration:run": " node ./node_modules/typeorm/cli.js migration:run -d ./dist/ormconfig.js",
+    "megration:revert": " node ./node_modules/typeorm/cli.js migration:revert -d ./dist/ormconfig.js"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -33,6 +36,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "http-status-codes": "^2.2.0",
+    "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
