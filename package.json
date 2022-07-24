@@ -19,9 +19,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "megration:gen": " node ./node_modules/typeorm/cli.js migration:generate -d ./dist/ormconfig.js",
-    "megration:run": " node ./node_modules/typeorm/cli.js migration:run -d ./dist/ormconfig.js",
-    "megration:revert": " node ./node_modules/typeorm/cli.js migration:revert -d ./dist/ormconfig.js"
+    "migration:gen": " node ./node_modules/typeorm/cli.js migration:generate -d ./dist/ormconfig.js",
+    "migration:run": " node ./node_modules/typeorm/cli.js migration:run -d ./dist/ormconfig.js",
+    "migration:revert": " node ./node_modules/typeorm/cli.js migration:revert -d ./dist/ormconfig.js"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

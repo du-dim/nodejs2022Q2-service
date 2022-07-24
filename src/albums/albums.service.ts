@@ -36,17 +36,13 @@ export class AlbumsService {
   }
 
   async create(album: CreateAlbumDto) {
-    const year = { year: 0 };
-    const createAlbum = this.albumsRepository.create({
-      ...year,
-      ...album,
-    });
+    const createAlbum = this.albumsRepository.create(album);
     return await this.albumsRepository.save(createAlbum);
   }
 
   async update(album: UpdateAlbumDto, id: string) {
     const albumId = await this.albumsRepository.findOneBy({ id });
-    if (!album) throw new NotFoundException("Album doesn't exist");
+    if (!albumId) throw new NotFoundException("Album doesn't exist");
     const updateAlbum = { ...albumId, ...album };
     return await this.albumsRepository.save(updateAlbum);
   }
@@ -55,8 +51,8 @@ export class AlbumsService {
     const result = await this.albumsRepository.delete(id);
     if (result.affected === 0)
       throw new NotFoundException("Album doesn't exist");
-    this.tracksService.idNull('albumId', id);
-    this.favoritesService.del('albums', id);
+    await this.tracksService.idNull('albumId', id);
+    await this.favoritesService.del('albums', id);
   }
 
   async idNullArtist(id: string) {

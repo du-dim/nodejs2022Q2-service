@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   HttpCode,
   Param,
   ParseUUIDPipe,
@@ -23,18 +24,21 @@ export class ArtistsController {
   }
 
   @Get(':id')
+  @Header('mode', 'cors')
   @HttpCode(200)
   async getById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return await this.artistsService.getById(id);
   }
 
   @Post()
+  @Header('mode', 'cors')
   @HttpCode(201)
   async create(@Body() createArtistDto: CreateArtistDto) {
     return await this.artistsService.create(createArtistDto);
   }
 
   @Put(':id')
+  @Header('mode', 'cors')
   @HttpCode(200)
   async update(
     @Body() updateArtistDto: UpdateArtistDto,
@@ -44,8 +48,9 @@ export class ArtistsController {
   }
 
   @Delete(':id')
+  @Header('mode', 'cors')
   @HttpCode(204)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return await this.artistsService.remove(id);
+    await this.artistsService.remove(id);
   }
 }

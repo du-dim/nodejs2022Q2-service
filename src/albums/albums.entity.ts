@@ -8,9 +8,9 @@ export class AlbumEntity {
   @Column({ length: 20 })
   name: string;
 
-  @Column()
+  @Column({ type: 'uuid', default: null })
   artistId: string | null;
 
-  @Column('int')
+  @Column({ type: 'int', default: 0 })
   year: number;
 }

@@ -46,6 +46,6 @@ export class TracksController {
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return await this.tracksService.remove(id);
+    await this.tracksService.remove(id);
   }
 }

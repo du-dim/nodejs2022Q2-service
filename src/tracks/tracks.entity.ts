@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('trak')
+@Entity('traсk')
 export class TrackEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -8,10 +8,10 @@ export class TrackEntity {
   @Column({ length: 20 })
   name: string;
 
-  @Column()
+  @Column({ type: 'uuid', default: null })
   artistId: string | null;
 
-  @Column()
+  @Column({ type: 'uuid', default: null })
   albumId: string | null;
 
   @Column('int')

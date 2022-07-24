@@ -8,20 +8,26 @@ export class UserEntity {
   @Column({ length: 20 })
   login: string;
 
-  @Column()
+  @Column('text')
   password: string;
 
   @Column('int')
   version: number;
 
-  @Column('int')
+  @Column('bigint')
   createdAt: number;
 
-  @Column('int')
+  @Column('bigint')
   updatedAt: number;
 
   toResponse() {
     const { id, login, version, createdAt, updatedAt } = this;
-    return { id, login, version, createdAt, updatedAt };
+    return {
+      id,
+      login,
+      version,
+      createdAt: +createdAt,
+      updatedAt: +updatedAt,
+    };
   }
 }

@@ -26,7 +26,7 @@ export class TracksService {
   }
 
   async getById(id: string) {
-    const tracksId = await this.tracksRepository.findOneBy({ id: id });
+    const tracksId = await this.tracksRepository.findOneBy({ id });
     if (!tracksId) throw new NotFoundException("Track doesn't exist");
     return tracksId;
   }
@@ -37,8 +37,8 @@ export class TracksService {
   }
 
   async update(track: UpdateTrackDto, id: string) {
-    const trackId = await this.tracksRepository.findOneBy({ id: id });
-    if (!track) throw new NotFoundException("Track doesn't exist");
+    const trackId = await this.tracksRepository.findOneBy({ id });
+    if (!trackId) throw new NotFoundException("Track doesn't exist");
     const updateTrack = { ...trackId, ...track };
     return await this.tracksRepository.save(updateTrack);
   }

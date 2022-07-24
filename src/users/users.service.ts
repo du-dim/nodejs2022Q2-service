@@ -22,7 +22,7 @@ export class UsersService {
   }
 
   async getById(id: string) {
-    const userId = await this.usersRepository.findOneBy({ id: id });
+    const userId = await this.usersRepository.findOneBy({ id });
     if (!userId) throw new NotFoundException("User doesn't exist");
     return userId.toResponse();
   }
@@ -42,17 +42,18 @@ export class UsersService {
   }
 
   async update(user: UpdatePasswordDto, id: string) {
-    const userId = await this.usersRepository.findOneBy({ id: id });
+    const userId = await this.usersRepository.findOneBy({ id });
     if (!userId) throw new NotFoundException("User doesn't exist");
-    if (userId.password !== user.oldPassword)
+
+    if (user.oldPassword !== userId.password)
       throw new ForbiddenException('OldPassowrd is wrong');
     const addition = {
       password: user.newPassword,
       version: userId.version + 1,
       updatedAt: +Date.now(),
     };
-    const updateUser = { ...userId, ...user, ...addition };
-    return (await this.usersRepository.save(updateUser)).toResponse();
+    await this.usersRepository.update({ id }, addition);
+    return await this.getById(id);
   }
 
   async remove(id: string) {

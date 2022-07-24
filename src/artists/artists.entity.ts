@@ -5,9 +5,9 @@ export class ArtistEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 20 })
+  @Column('text')
   name: string;
 
-  @Column('boolean')
+  @Column({ type: 'boolean', default: false })
   grammy: boolean;
 }
