@@ -1,16 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { AlbumEntity } from 'src/albums/albums.entity';
+import { ArtistEntity } from 'src/artists/artists.entity';
+import { TrackEntity } from 'src/tracks/tracks.entity';
+import { Entity, PrimaryGeneratedColumn, JoinTable, ManyToMany } from 'typeorm';
 
 @Entity('favorites')
 export class FavoritesEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('uuid', { array: true })
-  artists: string[];
+  @ManyToMany(() => AlbumEntity, (album) => album, { cascade: true })
+  @JoinTable({ name: 'favorites_album' })
+  albums: AlbumEntity[];
 
-  @Column('uuid', { array: true })
-  albums: string[];
+  @ManyToMany(() => ArtistEntity, (artist) => artist, { cascade: true })
+  @JoinTable({ name: 'favorites_artist' })
+  artists: ArtistEntity[];
 
-  @Column('uuid', { array: true })
-  tracks: string[];
+  @ManyToMany(() => TrackEntity, (traсk) => traсk, { cascade: true })
+  @JoinTable({ name: 'favorites_track' })
+  tracks: TrackEntity[];
 }

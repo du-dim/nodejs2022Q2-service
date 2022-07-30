@@ -26,47 +26,46 @@ export class FavoritesService {
   ) {}
 
   async getAll() {
-    await this.initial();
+    const favorites = (
+      await this.favoritesRepository.find({
+        relations: ['artists', 'albums', 'tracks'],
+      })
+    )[0];
+    if (!favorites)
+      return { artists: [], albums: [], tracks: [] } as IFavorites;
 
-    const favorites = (await this.favoritesRepository.find())[0];
-    const p1 = favorites.albums.map(
-      async (id) => await this.albumsService.getById(id),
-    );
-    const p2 = favorites.artists.map(
-      async (id) => await this.artistsService.getById(id),
-    );
-    const p3 = favorites.tracks.map(
-      async (id) => await this.tracksService.getById(id),
-    );
-    const result = await Promise.all([p1, p2, p3]);
-    const albums = { albums: await Promise.all(result[0]) };
-    const artists = { artists: await Promise.all(result[1]) };
-    const tracks = { tracks: await Promise.all(result[2]) };
-    return { ...albums, ...artists, ...tracks };
+    const albums = favorites.albums;
+    const artists = favorites.artists;
+    const tracks = favorites.tracks;
+    return { albums, artists, tracks };
   }
 
   async add(entity: string, id: string) {
-    await this.initial();
-    const favorites = (await this.favoritesRepository.find())[0];
-    const keyService = `${entity}Service` as
-      | 'albumsService'
-      | 'artistsService'
-      | 'tracksService';
-
-    const dbEntity = await this[keyService].getAll();
-    if (dbEntity.findIndex((e: { id: string }) => e.id === id) < 0)
-      throw new UnprocessableEntityException(
-        `${entity.slice(0, -1)} doesn't exist`,
-      );
-
-    favorites[entity].push(id);
-    await this.favoritesRepository.save(favorites);
-    return await this[keyService].getById(id);
+    try {
+      await this.initial();
+      const favorites = (
+        await this.favoritesRepository.find({ relations: [entity] })
+      )[0];
+      console.log(favorites);
+      console.log(favorites.artists);
+      const keyService = `${entity}Service` as
+        | 'albumsService'
+        | 'artistsService'
+        | 'tracksService';
+      const dbEntity = await this[keyService].getById(id);
+      favorites[entity] = [...favorites[entity], dbEntity];
+      await this.favoritesRepository.save(favorites);
+      delete favorites.id;
+      return favorites;
+    } catch (error) {
+      throw new UnprocessableEntityException(`${error}`);
+    }
   }
 
   async del(entity: string, id: string) {
-    await this.initial();
-    const favorites = (await this.favoritesRepository.find())[0];
+    const favorites = (
+      await this.favoritesRepository.find({ relations: [entity] })
+    )[0];
     favorites[entity] = favorites[entity].filter((e: string) => e !== id);
     await this.favoritesRepository.save(favorites);
   }
@@ -74,8 +73,7 @@ export class FavoritesService {
   async initial() {
     const favoritesArr = await this.favoritesRepository.find();
     if (favoritesArr.length) return;
-    const columns = { artists: [], albums: [], tracks: [] } as IFavorites;
-    const table = this.favoritesRepository.create(columns);
+    const table = this.favoritesRepository.create();
     await this.favoritesRepository.save(table);
   }
 }

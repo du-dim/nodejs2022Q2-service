@@ -52,7 +52,6 @@ export class AlbumsService {
     if (result.affected === 0)
       throw new NotFoundException("Album doesn't exist");
     await this.tracksService.idNull('albumId', id);
-    await this.favoritesService.del('albums', id);
   }
 
   async idNullArtist(id: string) {

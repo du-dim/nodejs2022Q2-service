@@ -36,6 +36,7 @@ volumes:
   pgdata:
 networks:
   restnet:
+    driver: bridge
     
     
     

@@ -57,6 +57,5 @@ export class ArtistsService {
       throw new NotFoundException("Artist doesn't exist");
     await this.albumsService.idNullArtist(id);
     await this.tracksService.idNull('artistId', id);
-    await this.favoritesService.del('artists', id);
   }
 }

@@ -47,7 +47,6 @@ export class TracksService {
     const result = await this.tracksRepository.delete(id);
     if (result.affected === 0)
       throw new NotFoundException("Track doesn't exist");
-    await this.favoritesService.del('tracks', id);
   }
 
   async idNull(entityId: 'albumId' | 'artistId', id: string) {
