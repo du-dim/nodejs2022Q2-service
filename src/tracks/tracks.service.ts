@@ -1,12 +1,6 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { FavoritesService } from 'src/favorites/favorites.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TrackEntity } from './tracks.entity';
 import { Repository } from 'typeorm';
@@ -14,9 +8,6 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class TracksService {
   constructor(
-    @Inject(forwardRef(() => FavoritesService))
-    private favoritesService: FavoritesService,
-
     @InjectRepository(TrackEntity)
     private tracksRepository: Repository<TrackEntity>,
   ) {}
@@ -47,12 +38,5 @@ export class TracksService {
     const result = await this.tracksRepository.delete(id);
     if (result.affected === 0)
       throw new NotFoundException("Track doesn't exist");
-  }
-
-  async idNull(entityId: 'albumId' | 'artistId', id: string) {
-    for await (const tr of await this.getAll()) {
-      tr[entityId] = tr[entityId] === id ? null : tr[entityId];
-      await this.tracksRepository.save(tr);
-    }
   }
 }

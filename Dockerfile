@@ -1,9 +1,6 @@
 FROM node:16.15-alpine as development
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm cache clean --force
-RUN npm install -g npm@8.15.1
-RUN npm config set registry https://registry.npmjs.org/
 RUN npm install --only=development
 COPY . .
 RUN npm run build

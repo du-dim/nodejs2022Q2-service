@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  forwardRef,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AlbumsService } from 'src/albums/albums.service';
 import { ArtistsService } from 'src/artists/artists.service';
@@ -15,11 +10,8 @@ import { IFavorites } from 'src/_typesTS/types';
 @Injectable()
 export class FavoritesService {
   constructor(
-    @Inject(forwardRef(() => AlbumsService))
     private albumsService: AlbumsService,
-    @Inject(forwardRef(() => ArtistsService))
     private artistsService: ArtistsService,
-    @Inject(forwardRef(() => TracksService))
     private tracksService: TracksService,
     @InjectRepository(FavoritesEntity)
     private favoritesRepository: Repository<FavoritesEntity>,
@@ -31,32 +23,32 @@ export class FavoritesService {
         relations: ['artists', 'albums', 'tracks'],
       })
     )[0];
+    console.log(favorites);
     if (!favorites)
       return { artists: [], albums: [], tracks: [] } as IFavorites;
 
-    const albums = favorites.albums;
-    const artists = favorites.artists;
-    const tracks = favorites.tracks;
-    return { albums, artists, tracks };
+    delete favorites.id;
+    return favorites;
   }
 
   async add(entity: string, id: string) {
     try {
       await this.initial();
       const favorites = (
-        await this.favoritesRepository.find({ relations: [entity] })
+        await this.favoritesRepository.find({
+          relations: ['artists', 'albums', 'tracks'],
+        })
       )[0];
-      console.log(favorites);
-      console.log(favorites.artists);
+
       const keyService = `${entity}Service` as
         | 'albumsService'
         | 'artistsService'
         | 'tracksService';
       const dbEntity = await this[keyService].getById(id);
-      favorites[entity] = [...favorites[entity], dbEntity];
-      await this.favoritesRepository.save(favorites);
-      delete favorites.id;
-      return favorites;
+      favorites[entity].push(dbEntity);
+      const result = await this.favoritesRepository.save(favorites);
+      delete result.id;
+      return result;
     } catch (error) {
       throw new UnprocessableEntityException(`${error}`);
     }
@@ -64,9 +56,13 @@ export class FavoritesService {
 
   async del(entity: string, id: string) {
     const favorites = (
-      await this.favoritesRepository.find({ relations: [entity] })
+      await this.favoritesRepository.find({
+        relations: ['artists', 'albums', 'tracks'],
+      })
     )[0];
-    favorites[entity] = favorites[entity].filter((e: string) => e !== id);
+    favorites[entity] = favorites[entity].filter(
+      (e: { id: string }) => e.id !== id,
+    );
     await this.favoritesRepository.save(favorites);
   }
 

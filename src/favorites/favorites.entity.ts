@@ -8,15 +8,15 @@ export class FavoritesEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToMany(() => AlbumEntity, (album) => album, { cascade: true })
+  @ManyToMany(() => AlbumEntity)
   @JoinTable({ name: 'favorites_album' })
   albums: AlbumEntity[];
 
-  @ManyToMany(() => ArtistEntity, (artist) => artist, { cascade: true })
+  @ManyToMany(() => ArtistEntity)
   @JoinTable({ name: 'favorites_artist' })
   artists: ArtistEntity[];
 
-  @ManyToMany(() => TrackEntity, (traсk) => traсk, { cascade: true })
+  @ManyToMany(() => TrackEntity)
   @JoinTable({ name: 'favorites_track' })
   tracks: TrackEntity[];
 }
