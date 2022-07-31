@@ -20,7 +20,7 @@ export class AlbumEntity {
   @Column({ type: 'int', default: 0 })
   year: number;
 
-  @ManyToOne(() => ArtistEntity, (art) => art, {
+  @ManyToOne(() => ArtistEntity, (art) => art.albums, {
     cascade: true,
     eager: true,
     nullable: true,

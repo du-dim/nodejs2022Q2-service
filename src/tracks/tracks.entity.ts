@@ -19,7 +19,7 @@ export class TrackEntity {
   @Column('int')
   duration: number;
 
-  @ManyToOne(() => ArtistEntity, (art) => art, {
+  @ManyToOne(() => ArtistEntity, (art) => art.tracks, {
     cascade: true,
     eager: true,
     nullable: true,
@@ -28,7 +28,7 @@ export class TrackEntity {
   @JoinColumn({ name: 'artistId' })
   artistId: string | null;
 
-  @ManyToOne(() => AlbumEntity, (alb) => alb, {
+  @ManyToOne(() => AlbumEntity, (alb) => alb.tracks, {
     cascade: true,
     eager: true,
     nullable: true,

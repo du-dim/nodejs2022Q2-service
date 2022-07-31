@@ -23,7 +23,6 @@ export class FavoritesService {
         relations: ['artists', 'albums', 'tracks'],
       })
     )[0];
-    console.log(favorites);
     if (!favorites)
       return { artists: [], albums: [], tracks: [] } as IFavorites;
 
