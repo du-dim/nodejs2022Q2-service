@@ -39,6 +39,12 @@ https://hub.docker.com/repository/docker/dimdubovik/nodejs2022q2-service_rest-db
 
 ![image](https://user-images.githubusercontent.com/86885956/182045249-1daba547-ae95-4342-94c4-803e88f0cf7e.png)
 
+## Scan 
+
+```
+docker scan node
+```
+
 ## Generate migration
 
 ```
