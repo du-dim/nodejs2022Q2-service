@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  rest-app:    
+    build:
+      context: ./
+      target: development
+    volumes:
+      - .:/usr/src/app
+    restart: always
+    ports: 
+      - "${PORT}:${PORT}"
+    command: npm run start:dev
+    env_file:
+      - .env
+    depends_on:
+      - rest-db
+    networks:
+      - restnet 
+  
+  rest-db:    
+    build: ./database
+    restart: always
+    ports: 
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:      
+      - "POSTGRES_DB=${POSTGRES_DB}"
+      - "POSTGRES_USER=${POSTGRES_USER}"
+      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+      - PG_DATA=/var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - restnet 
+volumes:
+  pgdata:
+networks:
+  restnet:
+    driver: bridge
+    
+    
+    
+ 
