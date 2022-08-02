@@ -26,8 +26,16 @@ export class FavoritesService {
     if (!favorites)
       return { artists: [], albums: [], tracks: [] } as IFavorites;
 
-    delete favorites.id;
-    return favorites;
+    const { artists, albums, tracks } = favorites;
+    albums.forEach((e: any) => {
+      e.artistId = e.artistId ? e.artistId.id : e.artistId;
+    });
+    tracks.forEach((e: any) => {
+      e.artistId = e.artistId ? e.artistId.id : e.artistId;
+      e.albumId = e.albumId ? e.albumId.id : e.albumId;
+    });
+
+    return { artists, albums, tracks };
   }
 
   async add(entity: string, id: string) {
@@ -45,9 +53,8 @@ export class FavoritesService {
         | 'tracksService';
       const dbEntity = await this[keyService].getById(id);
       favorites[entity].push(dbEntity);
-      const result = await this.favoritesRepository.save(favorites);
-      delete result.id;
-      return result;
+      await this.favoritesRepository.save(favorites);
+      return dbEntity;
     } catch (error) {
       throw new UnprocessableEntityException(`${error}`);
     }
