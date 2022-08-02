@@ -27,6 +27,10 @@ export class UsersService {
     return userId.toResponse();
   }
 
+  async getByLogin(login: string) {
+    return await this.usersRepository.findOne({ where: { login } });
+  }
+
   async create(user: CreateUserDto) {
     const version = { version: 1 };
     const now = +Date.now();

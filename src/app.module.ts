@@ -6,6 +6,7 @@ import { TracksModule } from './tracks/tracks.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import config from './ormconfig';
 
 @Module({
@@ -17,6 +18,7 @@ import config from './ormconfig';
     AlbumsModule,
     TracksModule,
     FavoritesModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
