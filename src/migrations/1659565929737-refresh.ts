@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class First1659295429380 implements MigrationInterface {
-  name = 'First1659295429380';
+export class refresh1659565929737 implements MigrationInterface {
+  name = 'refresh1659565929737';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -14,10 +14,13 @@ export class First1659295429380 implements MigrationInterface {
       `CREATE TABLE "album" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying(20) NOT NULL, "year" integer NOT NULL DEFAULT '0', "artistId" uuid, CONSTRAINT "PK_58e0b4b8a31bb897e6959fe3206" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "favorites" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), CONSTRAINT "PK_890818d27523748dd36a4d1bdc8" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "user" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "login" character varying(20) NOT NULL, "password" text NOT NULL, "version" integer NOT NULL, "createdAt" bigint NOT NULL, "updatedAt" bigint NOT NULL, CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "user" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "login" character varying(20) NOT NULL, "password" text NOT NULL, "version" integer NOT NULL, "createdAt" bigint NOT NULL, "updatedAt" bigint NOT NULL, CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "refresh_token" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "refresh" text NOT NULL, "userId" uuid, CONSTRAINT "REL_8e913e288156c133999341156a" UNIQUE ("userId"), CONSTRAINT "PK_b575dd3c21fb0831013c909e7fe" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "favorites" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), CONSTRAINT "PK_890818d27523748dd36a4d1bdc8" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "favorites_album" ("favoritesId" uuid NOT NULL, "albumId" uuid NOT NULL, CONSTRAINT "PK_59c6fe6dca787f489120c41da29" PRIMARY KEY ("favoritesId", "albumId"))`,
@@ -54,6 +57,9 @@ export class First1659295429380 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "album" ADD CONSTRAINT "FK_3d06f25148a4a880b429e3bc839" FOREIGN KEY ("artistId") REFERENCES "artist"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "refresh_token" ADD CONSTRAINT "FK_8e913e288156c133999341156ad" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "favorites_album" ADD CONSTRAINT "FK_1a1c1aa01c513e22e02c1759c95" FOREIGN KEY ("favoritesId") REFERENCES "favorites"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -95,6 +101,9 @@ export class First1659295429380 implements MigrationInterface {
       `ALTER TABLE "favorites_album" DROP CONSTRAINT "FK_1a1c1aa01c513e22e02c1759c95"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "refresh_token" DROP CONSTRAINT "FK_8e913e288156c133999341156ad"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "album" DROP CONSTRAINT "FK_3d06f25148a4a880b429e3bc839"`,
     );
     await queryRunner.query(
@@ -124,8 +133,9 @@ export class First1659295429380 implements MigrationInterface {
       `DROP INDEX "public"."IDX_1a1c1aa01c513e22e02c1759c9"`,
     );
     await queryRunner.query(`DROP TABLE "favorites_album"`);
-    await queryRunner.query(`DROP TABLE "user"`);
     await queryRunner.query(`DROP TABLE "favorites"`);
+    await queryRunner.query(`DROP TABLE "refresh_token"`);
+    await queryRunner.query(`DROP TABLE "user"`);
     await queryRunner.query(`DROP TABLE "album"`);
     await queryRunner.query(`DROP TABLE "artist"`);
     await queryRunner.query(`DROP TABLE "traсk"`);

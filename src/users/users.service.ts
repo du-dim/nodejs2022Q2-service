@@ -8,10 +8,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Repository } from 'typeorm';
 import { UserEntity } from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
+    private authService: AuthService,
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
   ) {}
@@ -42,6 +44,7 @@ export class UsersService {
       ...createdAt,
       ...updatedAt,
     });
+    await this.authService.createRefresh(createUser);
     return (await this.usersRepository.save(createUser)).toResponse();
   }
 
