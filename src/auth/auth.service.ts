@@ -4,17 +4,16 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UserEntity } from 'src/users/users.entity';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { TokenEntity } from './token.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
-import { UserEntity } from 'src/users/users.entity';
 
 @Injectable()
 export class AuthService {
@@ -45,16 +44,17 @@ export class AuthService {
     const isMatch = await bcrypt.compare(userDto.password, user.password);
     if (!isMatch) throw new ForbiddenException('Incorrect password');
     const tokens = this.generateTokens(user);
-    await this.updateRefresh(user, tokens.refresh_token);
+    await this.updateRefresh(user, tokens.refreshToken);
+    console.log(tokens);
     return tokens;
   }
 
-  async refresh(refresh_token) {
+  async refresh() {
     return;
   }
 
   generateTokens(user: UserEntity) {
-    const payload = { id: user.id, login: user.login };
+    const payload = { sub: user.id, login: user.login };
 
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET_KEY,
@@ -67,23 +67,32 @@ export class AuthService {
     });
 
     return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     };
   }
 
   async updateRefresh(user: UserEntity, refresh: string) {
     const hashRefresh = await bcrypt.hash(refresh, +process.env.CRYPT_SALT);
-    const up = await this.tokenRepository.update(user.id, {
+    await this.tokenRepository.update(user.id, {
       refresh: hashRefresh,
     });
   }
 
   async createRefresh(user: UserEntity) {
-    const refresh = this.generateTokens(user).refresh_token;
+    const refresh = this.generateTokens(user).refreshToken;
     const hashRefresh = await bcrypt.hash(refresh, +process.env.CRYPT_SALT);
     const token = this.tokenRepository.create({ refresh: hashRefresh });
     token.user = user;
     await this.tokenRepository.save(token);
+  }
+
+  async validateUser(payload: { sub: string; login: string }) {
+    const user = await this.usersService.getByLogin(payload.login);
+    if (user && user.id === payload.sub) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 }
