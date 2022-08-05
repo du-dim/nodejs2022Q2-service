@@ -4,6 +4,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -14,6 +15,8 @@ import { TokenEntity } from './token.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
+import { TokenDto } from './dto/token.dto';
+import { JwtPayload } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -45,15 +48,40 @@ export class AuthService {
     if (!isMatch) throw new ForbiddenException('Incorrect password');
     const tokens = this.generateTokens(user);
     await this.updateRefresh(user, tokens.refreshToken);
-    console.log(tokens);
     return tokens;
   }
 
-  async refresh() {
-    return;
+  async refresh(userId: string, refresh: TokenDto) {
+    if (!refresh.refreshToken) {
+      throw new UnauthorizedException('No {refreshToken} in the body');
+    }
+    try {
+      const user = await this.usersService.getById(userId);
+      const tokenDB = await this.tokenRepository.findOne({
+        relations: ['user'],
+        where: { user: { id: user.id } },
+      });
+
+      const payload = this.jwtService.decode(
+        refresh.refreshToken,
+      ) as JwtPayload;
+
+      const isMatchRefresh = refresh.refreshToken === tokenDB.refresh;
+      const isTime = payload.exp < +Date.now() / 1000;
+      console.log(isMatchRefresh, isTime);
+
+      if (!isMatchRefresh || isTime) {
+        throw new Error('refreshToken is invalid or expired');
+      }
+      const tokens = this.generateTokens(user);
+      await this.updateRefresh(user, tokens.refreshToken);
+      return tokens;
+    } catch (error) {
+      throw new ForbiddenException(`${error}`);
+    }
   }
 
-  generateTokens(user: UserEntity) {
+  generateTokens(user: { id: string; login: string }) {
     const payload = { sub: user.id, login: user.login };
 
     const accessToken = this.jwtService.sign(payload, {
@@ -72,17 +100,18 @@ export class AuthService {
     };
   }
 
-  async updateRefresh(user: UserEntity, refresh: string) {
-    const hashRefresh = await bcrypt.hash(refresh, +process.env.CRYPT_SALT);
-    await this.tokenRepository.update(user.id, {
-      refresh: hashRefresh,
+  async updateRefresh(user: { id: string; login: string }, refresh: string) {
+    const token = await this.tokenRepository.findOne({
+      relations: ['user'],
+      where: { user: { id: user.id } },
     });
+    token.refresh = refresh;
+    await this.tokenRepository.save(token);
   }
 
   async createRefresh(user: UserEntity) {
     const refresh = this.generateTokens(user).refreshToken;
-    const hashRefresh = await bcrypt.hash(refresh, +process.env.CRYPT_SALT);
-    const token = this.tokenRepository.create({ refresh: hashRefresh });
+    const token = this.tokenRepository.create({ refresh });
     token.user = user;
     await this.tokenRepository.save(token);
   }
