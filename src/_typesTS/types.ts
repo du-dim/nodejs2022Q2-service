@@ -41,3 +41,14 @@ export enum EEntity {
   ALBUM = 'album',
   TRACK = 'track',
 }
+
+export interface IHttpExceptionRes {
+  statusCode: number;
+  error: string;
+}
+
+export interface ICustomHttpExceptionRes extends IHttpExceptionRes {
+  path: string;
+  method: string;
+  timeStamp: Date;
+}
