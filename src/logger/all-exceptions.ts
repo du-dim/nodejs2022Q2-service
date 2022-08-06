@@ -9,9 +9,11 @@ import { Request } from 'express';
 import { Response } from 'express';
 import * as fs from 'fs';
 import { ICustomHttpExceptionRes, IHttpExceptionRes } from 'src/_typesTS/types';
+import { WriteLog } from './writeLogtoFile';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
+  constructor(private writeLog: WriteLog) {}
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -32,7 +34,8 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     const errorResponse = this.getErrorResponse(status, errorMessage, request);
     const errorLog = this.getLogError(errorResponse, request, exception);
-    this.writeErrorLogToFile(errorLog);
+    this.writeLog.writeError(errorLog);
+    this.writeLog.writeTotal(errorLog);
     response.status(status).json(errorResponse);
   }
   getErrorResponse = (
@@ -54,7 +57,7 @@ export class AllExceptionFilter implements ExceptionFilter {
   ) => {
     const { statusCode, error } = errorResponse;
     const { method, url } = request;
-    const errorLog = `Response Code: ${statusCode}; Method: ${method}; URL: ${url}\n
+    const errorLog = `\n\nResponse Code: ${statusCode}; Method: ${method}; URL: ${url}
     User: ${JSON.stringify(request.user ?? 'Not signed in')}\n
     ${exception instanceof HttpException ? exception.stack : error}\n`;
     return errorLog;

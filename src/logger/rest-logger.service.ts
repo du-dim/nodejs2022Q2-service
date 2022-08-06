@@ -6,8 +6,8 @@ export class RestLoggerService {
   log(message: string, trace: string) {
     return this.logger.log(message);
   }
-  error(message: string, trace: string) {
-    return this.logger.error(message);
+  error(message: string, stack: unknown) {
+    return this.logger.error(message, stack);
   }
   warn(message: string, trace: string) {
     return this.logger.warn(message);
