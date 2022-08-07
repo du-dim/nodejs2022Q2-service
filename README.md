@@ -50,7 +50,7 @@ npm run migration:back
 
 ## After migration
 
-![image](https://user-images.githubusercontent.com/86885956/182044985-1ef3dad3-47f0-4683-91c1-acb39fb053ab.png)
+![image](https://user-images.githubusercontent.com/86885956/183312103-f1fa78bf-70d7-4bf0-80d2-971d139d424c.png)
 
 
 ## Testing
