@@ -62,3 +62,4 @@ To run all test with authorization
 ```
 npm run test:auth
 ```
+![image](https://user-images.githubusercontent.com/86885956/183312286-1ab6a196-7945-4b2b-b676-edd05eb17c47.png)
