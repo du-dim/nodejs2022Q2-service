@@ -7,9 +7,7 @@ services:
       target: development
     volumes:
       - .:/usr/src/app
-      - node_modules:/usr/src/app/node_modules
-      - logs_error:/usr/src/app/src/logs/errorFiles
-      - logs_total:/usr/src/app/src/logs/totalFiles     
+      - node_modules:/usr/src/app/node_modules       
     restart: always
     ports: 
       - "${PORT}:${PORT}"
@@ -37,9 +35,7 @@ services:
       - restnet 
 volumes:
   pgdata:
-  node_modules:
-  logs_error:
-  logs_total: 
+  node_modules:  
 
 networks:
   restnet:

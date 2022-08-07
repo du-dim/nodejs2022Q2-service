@@ -21,3 +21,10 @@ async function bootstrap() {
   await app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 }
 bootstrap();
+process.on('unhandledRejection', (reason, promise) => {
+  throw new Error(`Unhandled Rejection at:', ${promise}, 'reason:', ${reason}`);
+});
+
+process.on('uncaughtException', (err, origin) => {
+  throw new Error(`Caught exception: ${err}\n` + `Exception origin: ${origin}`);
+});
