@@ -9,9 +9,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
-import { RestLoggerModule } from './logger/rest-logger.module';
+import { CustomLoggerModule } from './logger/customLogger.module';
 import config from './ormconfig';
-import { AllExceptionFilter } from './logger/all-exceptions';
+import { AllExceptionFilter } from './logger/allExceptions';
 import { LoggerMiddleware } from './logger/loggerMiddleware';
 
 @Module({
@@ -24,7 +24,7 @@ import { LoggerMiddleware } from './logger/loggerMiddleware';
     TracksModule,
     FavoritesModule,
     AuthModule,
-    RestLoggerModule,
+    CustomLoggerModule,
   ],
   providers: [
     {

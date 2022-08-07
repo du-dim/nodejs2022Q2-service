@@ -5,7 +5,6 @@ import { AppModule } from './app.module';
 import * as yaml from 'yaml';
 import * as path from 'path';
 import * as fs from 'fs';
-//import { RestLoggerService } from './logger/rest-logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +18,6 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
-  //app.useLogger(RestLoggerService);
   await app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 }
 bootstrap();

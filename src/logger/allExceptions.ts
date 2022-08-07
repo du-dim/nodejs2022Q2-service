@@ -4,21 +4,28 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-  Logger,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { IHttpExceptionRes } from 'src/_typesTS/types';
-import { WriteLog } from './writeLogtoFile';
 import { logOut } from './logOut';
+import { CustomLogger } from './customLogger.service';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
-  constructor(private writeLog: WriteLog) {}
-  private logger = new Logger('HTTP');
+  private logger = new CustomLogger();
+  startTime = 0;
+  endTime = 0;
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
+
+    request.on('end', () => {
+      this.startTime = Date.now();
+    });
+    response.on('close', () => {
+      this.endTime = Date.now();
+    });
 
     let status: HttpStatus;
     let errorMessage: string;
@@ -36,8 +43,6 @@ export class AllExceptionFilter implements ExceptionFilter {
     const errorResponse = this.getErrorResponse(status, errorMessage);
     const errorLog = this.getLogError(errorResponse, request);
 
-    // this.writeLog.writeError(errorLog);
-    // this.writeLog.writeTotal(errorLog);
     this.logger.error(errorLog);
 
     response.status(status).json(errorResponse);
@@ -49,6 +54,16 @@ export class AllExceptionFilter implements ExceptionFilter {
   getLogError = (errorResponse: IHttpExceptionRes, request: Request) => {
     const { statusCode, error } = errorResponse;
     const { method, originalUrl, query, body, user } = request;
-    return logOut(method, originalUrl, query, body, user, statusCode, error);
+    return logOut(
+      'ERROR',
+      method,
+      originalUrl,
+      query,
+      body,
+      user,
+      statusCode,
+      error,
+      this.endTime - this.startTime,
+    );
   };
 }
