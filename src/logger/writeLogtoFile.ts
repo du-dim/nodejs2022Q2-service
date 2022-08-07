@@ -8,8 +8,8 @@ export class WriteLog {
   size = process.env.LOGGER_SIZE;
 
   private async pathDir() {
-    const dirError = path.join('src', 'logs', 'errorFiles');
-    const dirTotal = path.join('src', 'logs', 'totalFiles');
+    const dirError = path.join('logs', 'errorFiles');
+    const dirTotal = path.join('logs', 'totalFiles');
     if (!fs.existsSync(dirError)) {
       await fsp.mkdir(dirError, { recursive: true });
     }
