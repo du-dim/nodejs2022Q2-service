@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ArtistsModule } from './artists/artists.module';
 import { AlbumsModule } from './albums/albums.module';
@@ -11,8 +11,8 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { RestLoggerModule } from './logger/rest-logger.module';
 import config from './ormconfig';
-import { RestLoggerService } from './logger/rest-logger.service';
 import { AllExceptionFilter } from './logger/all-exceptions';
+import { LoggerMiddleware } from './logger/loggerMiddleware';
 
 @Module({
   imports: [
@@ -37,4 +37,8 @@ import { AllExceptionFilter } from './logger/all-exceptions';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

@@ -1,24 +1,28 @@
-import { Injectable, LoggerService, Logger, LogLevel } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { Injectable, LoggerService, LogLevel } from '@nestjs/common';
+import { WriteLog } from './writeLogtoFile';
 
 @Injectable()
-export class RestLoggerService {
-  private readonly logger = new Logger('REST');
-  log(message: string, trace: string) {
-    return this.logger.log(message);
+export class CustomLogger implements LoggerService {
+  // private level = process.env.LOGGER_LEVEL;
+  // private levels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose'];
+  constructor(private writeLog: WriteLog) {}
+
+  log(message: string, ...optionalParams: any[]) {
+    this.writeLog.writeTotal(message);
   }
-  error(message: string, stack: unknown) {
-    return this.logger.error(message, stack);
+  error(message: string, ...optionalParams: any[]) {
+    this.writeLog.writeError(message);
+    this.writeLog.writeTotal(message);
   }
-  warn(message: string, trace: string) {
-    return this.logger.warn(message);
+  warn(message: string, ...optionalParams: any[]) {
+    this.writeLog.writeTotal(message);
   }
-  debug?(message: string, trace: string) {
-    return this.logger.debug(message);
+  debug?(message: string, ...optionalParams: any[]) {
+    this.writeLog.writeTotal(message);
   }
-  verbose?(message: string, trace: string) {
-    return this.logger.verbose(message);
+  verbose?(message: string, ...optionalParams: any[]) {
+    this.writeLog.writeTotal(message);
   }
-  setLogLevels?(levels: LogLevel[]) {
-    levels.forEach((level) => this.logger[level]);
-  }
+  setLogLevels?(levels: LogLevel[]) {}
 }
