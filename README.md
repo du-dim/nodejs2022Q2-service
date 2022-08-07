@@ -22,53 +22,43 @@ npm install
 ## Running application
 
 ```
-npm start
+docker-compose up -V --build
 ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
+## Generate migration
+
+```
+npm run migration:gen src/migrations/--name
+```
+
+## Run migration
+
+```
+npm run migration:load
+```
+![image](https://user-images.githubusercontent.com/86885956/182044845-c32a841a-d963-4906-b190-cfc1df634b2b.png)
+
+## Revert migration
+
+```
+npm run migration:back
+```
+
+## After migration
+
+![image](https://user-images.githubusercontent.com/86885956/183312103-f1fa78bf-70d7-4bf0-80d2-971d139d424c.png)
+
+
 ## Testing
 
 After application running open new terminal and enter:
-
-To run all tests without authorization
-
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
 
 To run all test with authorization
 
 ```
 npm run test:auth
 ```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
